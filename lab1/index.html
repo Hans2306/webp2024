@@ -25,7 +25,7 @@
     </head>
     <body>
         <h1>資工選課表</h1>
-        <table>
+        <table id="CSIE">
         <tr>
             <th> 開課單位   </th>
             <th>  課程名稱  </th>
@@ -34,7 +34,7 @@
         <tr>
             <td>  資工系  </td>
             <td> 物件導向軟體設計   </td>
-            <td> 黃崇源  </td>
+            <td>黃崇源</td>
         </tr>
         <tr>
             <td>  資工系  </td>
@@ -65,7 +65,7 @@
         <button onclick="changeResult()">Change</button>
         <script>
             function changeResult(){
-                var myTable = document.getElemtentById("CSIE");
+                var myTable = document.getElementById("CSIE");
                 myTable.rows[1].cells[2].innerHTML = "李春良";
             }
         </script>
