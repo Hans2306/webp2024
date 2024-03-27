@@ -38,6 +38,7 @@
       var rowCount = myTable.rows.length;
       if (rowCount > 1) {
         myTable.deleteRow(rowCount - 1);
+        i--；
       }
     }
 
