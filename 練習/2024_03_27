@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Example</title>
+</head>
+<body>
+  <h1 id="demo"></h1>
+  <table id="CSIE" class="table table-striped table-hover">
+    <tr>
+      <th>Department</th>
+      <th>Course</th>
+      <th>Instructor</th>
+    </tr>
+  </table>
+  <button onclick="addNewData()">Add New Data</button>
+  <button onclick="delOldData()">Delete Old Data</button>
+
+  <script>
+    var d = ["資工係", "資工係", "資工係", "資工係", "資工係", "資工係"];
+    var c = ["物件導向軟體設計", "計算機網路實驗", "作業系統實務", "生物統計", "通訊系統", "軟硬體專題"];
+    var t = ["黃崇源", "李春良", "張哲維", "陳光武", "陳仁暉", "魏志達"];
+
+    function addOneData(i) {
+      var myTable = document.getElementById("CSIE");
+      var rowCount = myTable.rows.length;
+      var cellCount = myTable.rows[0].cells.length;
+      var row = myTable.insertRow(rowCount);
+      row.insertCell(0).innerHTML = d[i];
+      row.insertCell(1).innerHTML = c[i];
+      row.insertCell(2).innerHTML = t[i];
+      console.log(d[i], c[i], t[i]);
+    }
+
+    function delOldData() {
+      var myTable = document.getElementById("CSIE");
+      var rowCount = myTable.rows.length;
+      if (rowCount > 1) {
+        myTable.deleteRow(rowCount - 1);
+      }
+    }
+
+    function addNewData() {
+      // Call addOneData() with the current index
+      addOneData(i);
+      // Increment the index
+      i++;
+    }
+
+    var i = 0;
+    var timer = setInterval(myfunc, 1000);
+
+    function myfunc() {
+      // Call addOneData() and increment index
+      addOneData(i);
+      i++;
+      // If all data has been added, clear the timer
+      if (i >= d.length) {
+        clearInterval(timer);
+      }
+    }
+
+    function updateTime() {
+      let d = new Date();
+      document.getElementById("demo").innerHTML = "CGU Timer ";
+      document.getElementById("demo").innerHTML += d.getHours() + ":";
+      document.getElementById("demo").innerHTML += d.getMinutes() + ":";
+      document.getElementById("demo").innerHTML += d.getSeconds();
+    }
+
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
