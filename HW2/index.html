@@ -1,0 +1,135 @@
+<html>
+<head>
+    <style>
+        table {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd
+        }
+
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>景點觀光展覽資訊</h1>
+<table id="CSIE" class="table table-striped table-hover">
+    <tr>
+        <th>名稱</th>
+        <th>地點</th>
+        <th>票價</th>
+    </tr>
+</table>
+<button onclick="loadPreviousPage()">Previous Page</button>
+<span id="paginationInfo"></span>
+<button onclick="loadNextPage()">Next Page</button>
+<input type="text" id="searchInput" oninput="searchTable()" placeholder="Search...">
+</body>
+
+<script>
+    var currentPage = 0; // Variable to track current page
+    var pageSize = 10; // Number of rows per page
+    var openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6&page=" + currentPage;
+    var dataset = []; // Variable to store fetched data
+    var filteredData = []; // Variable to store filtered data
+
+    // Function to fetch data for the next page
+    function loadNextPage() {
+        currentPage++; // Increment current page
+        openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6&page=" + currentPage;
+        fetchData();
+    }
+
+    // Function to fetch data for the previous page
+    function loadPreviousPage() {
+        if (currentPage > 0) {
+            currentPage--; // Decrement current page
+            openUrl = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6&page=" + currentPage;
+            fetchData();
+        }
+    }
+
+    // Function to fetch data from the API
+    function fetchData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', openUrl, true);
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                dataset = JSON.parse(this.responseText);
+                searchTable(); // Search after fetching new data
+            }
+        };
+    }
+
+    // Function to render data in the table
+    function renderData(data) {
+        var myTable = document.getElementById("CSIE");
+        // Preserve the first row (headers)
+        var headersRow = myTable.rows[0];
+        myTable.innerHTML = ""; // Clear the table except for the first row
+        myTable.appendChild(headersRow); // Append the preserved headers row back
+
+        // Check if it's the first page render
+        var isFirstPage = currentPage === 0;
+        var startIndex = isFirstPage ? 0 : currentPage * pageSize;
+        var endIndex = startIndex + pageSize;
+        var pageData = data.slice(startIndex, endIndex);
+        pageData.forEach(function (data, index) {
+            var row = myTable.insertRow();
+            row.insertCell(0).innerHTML = data['title'];
+            row.insertCell(1).innerHTML = data['showInfo'][0]['location'];
+            row.insertCell(2).innerHTML = data['showInfo'][0]['price'];
+        });
+        updatePaginationInfo();
+    }
+
+    // Function to update pagination info
+    function updatePaginationInfo() {
+        var totalPages = Math.ceil(filteredData.length / pageSize);
+        var paginationInfo = document.getElementById("paginationInfo");
+        paginationInfo.innerHTML = (currentPage + 1) + "/" + totalPages;
+    }
+
+    // Function to search table
+    function searchTable() {
+    var input, filter;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    filteredData = dataset.filter(function (item) {
+        // Iterate over all properties of the item
+        for (var key in item) {
+            if (item.hasOwnProperty(key)) {
+                // Check if the property value contains the filter text
+                if (String(item[key]).toUpperCase().includes(filter)) {
+                    return true; // If found, include the item in filtered data
+                }
+            }
+        }
+        return false; // If not found in any property, exclude the item
+    });
+    renderData(filteredData);
+}
+    // Initial data fetch
+    fetchData();
+</script>
+
+</html>
