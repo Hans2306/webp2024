@@ -17,39 +17,56 @@ const DataGridDemo = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const pageSize = 10;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = `https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6&page=${currentPage}`;
-      try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setData(json.map((item, index) => ({
-          id: index + 1,
-          title: item.title,
-          location: item.showInfo[0]?.location || '',
-          price: item.showInfo[0]?.price || '',
-        })));
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    };
+  const [originalData, setOriginalData] = useState([]); // Initialize originalData state variable
 
-    fetchData();
-  }, [currentPage]);
-
-  const handlePageChange = (params) => {
-    setCurrentPage(params.page - 1); // DataGrid page is 1-based, but currentPage is 0-based
+useEffect(() => {
+  const fetchData = async () => {
+    const url = `https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6&page=${currentPage}`;
+    try {
+      const response = await fetch(url);
+      const json = await response.json();
+      setData(json.map((item, index) => ({
+        id: index + 1,
+        title: item.title,
+        location: item.showInfo[0]?.location || '',
+        price: item.showInfo[0]?.price || '',
+      })));
+      setOriginalData(json.map((item, index) => ({
+        id: index + 1,
+        title: item.title,
+        location: item.showInfo[0]?.location || '',
+        price: item.showInfo[0]?.price || '',
+      })));
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
   };
 
-  const handleSearch = (event) => {
-    const value = event.target.value;
-    setSearchQuery(value);
-    // You can implement your filtering logic here
-    // For simplicity, let's filter data based on the title field
-    const filteredData = data.filter(item => item.title.toLowerCase().includes(value.toLowerCase()));
+  fetchData();
+}, [currentPage]);
+
+const handleSearch = (event) => {
+  const value = event.target.value.toLowerCase();
+  setSearchQuery(value);
+
+  if (value === '') {
+    setData(originalData); // Revert back to the original data when the search query is empty
+  } else {
+    // Filter data based on all fields
+    const filteredData = originalData.filter(item => {
+      // Check if any field of the item contains the search query
+      return Object.values(item).some(fieldValue =>
+        typeof fieldValue === 'string' && fieldValue.toLowerCase().includes(value)
+      );
+    });
+
     setData(filteredData);
+  }
+};
+  const handlePageChange = (params) => {
+    setCurrentPage(params.page - 1); // DataGrid page is 1-based, but currentPage is 0-based
   };
 
   return (
