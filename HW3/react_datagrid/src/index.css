@@ -1,0 +1,46 @@
+/* index.css */
+.custom-data-grid {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.custom-data-grid .MuiDataGrid-root {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.custom-data-grid .MuiDataGrid-cell,
+.custom-data-grid .MuiDataGrid-colCell {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+
+.custom-data-grid .MuiDataGrid-row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.custom-data-grid .MuiDataGrid-row:hover {
+  background-color: #ddd;
+}
+
+.custom-data-grid .MuiDataGrid-colCellCheckbox {
+  display: none; /* Hide the checkbox column */
+}
+
+/* Target specific columns */
+.custom-data-grid .MuiDataGrid-colCell:nth-child(2), /* Second column: 名稱 */
+.custom-data-grid .MuiDataGrid-colCell:nth-child(3), /* Third column: 地點 */
+.custom-data-grid .MuiDataGrid-colCell:nth-child(4) { /* Fourth column: 票價 */
+  background-color: #04AA6D;
+  color: white;
+}
+/* index.css */
+.custom-header-id,
+.custom-header-title,
+.custom-header-location,
+.custom-header-price {
+  flex-grow: 1; /* Make columns fill the width of the screen */
+  background-color:#04AA6D; /* Set background color to green for all column headers */
+}
+
+
+
